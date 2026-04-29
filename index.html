@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timeline | Motion Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:      #0a0a0a;
+    --surface: #141414;
+    --border:  rgba(255,255,255,0.08);
+    --text:    #f2f2f2;
+    --muted:   rgba(242,242,242,0.42);
+    --pink:    #d966e0;
+    --blue:    #2d7fd4;
+    --green:   #00d48a;
+    --nav-h:   72px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    min-height: 100vh;
+    cursor: none;
+  }
+
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--pink);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: width 0.22s, height 0.22s, background 0.22s;
+  }
+  .cursor.hover {
+    width: 38px; height: 38px;
+    background: transparent;
+    border: 1.5px solid var(--pink);
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: var(--nav-h);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2.5rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,10,10,0.88);
+    backdrop-filter: blur(14px);
+  }
+
+  .nav-logo {
+    display: flex; align-items: center;
+    text-decoration: none;
+    height: calc(var(--nav-h) - 18px);
+  }
+  .nav-logo img {
+    height: 100%; width: auto;
+    display: block; object-fit: contain;
+  }
+
+  .nav-links {
+    display: flex; gap: 2.5rem; list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* Stripe colorida abaixo da nav */
+  .nav-stripe {
+    position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 99;
+    height: 3px;
+    background: linear-gradient(90deg, var(--pink) 0%, var(--blue) 50%, var(--green) 100%);
+  }
+
+  /* HERO */
+  .hero {
+    padding-top: calc(var(--nav-h) + 3px);
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding-left: 2.5rem; padding-bottom: 5rem;
+    position: relative; overflow: hidden;
+  }
+
+  .hero-reel {
+    position: absolute; inset: 0; z-index: 0;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .hero-reel-placeholder {
+    width: 100%; height: 100%;
+    background: #0a0a0a;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 1.5rem;
+  }
+
+  .hero-bars { display: flex; flex-direction: column; gap: 6px; opacity: 0.12; }
+  .hero-bar  { height: 18px; border-radius: 2px; }
+  .hero-bar:nth-child(1) { width: 260px; background: var(--pink); }
+  .hero-bar:nth-child(2) { width: 200px; background: var(--blue); }
+  .hero-bar:nth-child(3) { width: 140px; background: var(--green); }
+  .hero-placeholder-label {
+    font-size: 0.62rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: rgba(255,255,255,0.2);
+  }
+
+  .hero-overlay {
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(to top, rgba(10,10,10,0.96) 25%, transparent 72%);
+  }
+
+  .hero-content { position: relative; z-index: 2; }
+
+  .hero-label {
+    font-size: 0.64rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .hero-label::before {
+    content: ''; display: inline-block;
+    width: 24px; height: 2px; background: var(--pink);
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3rem, 9vw, 7.5rem);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    margin-bottom: 2rem;
+  }
+  .hero-title .t1 { color: var(--text); }
+  .hero-title .t2 { color: var(--pink); }
+  .hero-title .t3 { color: var(--text); }
+
+  .hero-sub {
+    font-size: 0.78rem; color: var(--muted);
+    max-width: 360px; line-height: 1.75;
+  }
+
+  .hero-tags {
+    display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 2rem;
+  }
+  .hero-tag {
+    font-size: 0.58rem; letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem; border-radius: 100px; border: 1px solid;
+  }
+  .hero-tag.pk { color: var(--pink);  border-color: rgba(217,102,224,0.35); }
+  .hero-tag.bl { color: var(--blue);  border-color: rgba(45,127,212,0.35); }
+  .hero-tag.gr { color: var(--green); border-color: rgba(0,212,138,0.35); }
+
+  /* WORKS */
+  .works-header {
+    padding: 6rem 2.5rem 2.5rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .section-label {
+    font-size: 0.64rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+    white-space: nowrap;
+  }
+  .section-stripe {
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--pink), var(--blue), var(--green), transparent);
+  }
+
+  .works-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 2px; padding: 0 2px 2px;
+  }
+
+  /* CARD */
+  .card {
+    position: relative; overflow: hidden;
+    aspect-ratio: 16/9; display: block;
+    text-decoration: none; background: var(--surface);
+  }
+  .card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.3s; }
+  .card .thumb-static { position: absolute; inset: 0; }
+  .card .thumb-anim   { position: absolute; inset: 0; opacity: 0; }
+  .card:hover .thumb-static { opacity: 0; }
+  .card:hover .thumb-anim   { opacity: 1; }
+
+  .card-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,10,10,0.9) 0%, transparent 55%);
+    opacity: 0; transition: opacity 0.3s;
+    display: flex; align-items: flex-end; padding: 1.25rem;
+  }
+  .card:hover .card-overlay { opacity: 1; }
+
+  /* Barra colorida no hover */
+  .card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--pink), var(--blue), var(--green));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.35s ease;
+  }
+  .card:hover::after { transform: scaleX(1); }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 1rem; color: var(--text);
+    display: block; margin-bottom: 0.3rem;
+  }
+  .card-tag {
+    font-size: 0.58rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--pink);
+  }
+  .card-placeholder {
+    width: 100%; height: 100%; background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: rgba(255,255,255,0.1);
+  }
+
+  /* ABOUT */
+  .about {
+    padding: 8rem 2.5rem 6rem; max-width: 700px;
+    margin-top: 5rem; border-top: 1px solid var(--border);
+  }
+  .about-label {
+    font-size: 0.64rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 2rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .about-label::before {
+    content: ''; display: inline-block;
+    width: 24px; height: 2px; background: var(--green);
+  }
+  .about-text {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.3rem, 2.8vw, 1.9rem);
+    font-weight: 400; line-height: 1.45; color: var(--text); margin-bottom: 3rem;
+  }
+  .contact-links { display: flex; gap: 2rem; flex-wrap: wrap; }
+  .contact-links a {
+    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px; transition: color 0.2s, border-color 0.2s;
+  }
+  .contact-links a:hover { color: var(--pink); border-color: var(--pink); }
+
+  /* FOOTER */
+  footer {
+    padding: 2rem 2.5rem; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.6rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .footer-logo { display: flex; }
+  .footer-logo img { height: 22px; width: auto; opacity: 0.45; transition: opacity 0.2s; }
+  .footer-logo:hover img { opacity: 1; }
+
+  @media (max-width: 600px) {
+    nav { padding: 0 1.25rem; }
+    .nav-links { gap: 1.5rem; }
+    .hero { padding-left: 1.25rem; padding-bottom: 3.5rem; }
+    .works-header { padding: 4rem 1.25rem 2rem; }
+    .works-grid { grid-template-columns: 1fr; }
+    .about { padding: 5rem 1.25rem 4rem; }
+    footer { padding: 1.5rem 1.25rem; flex-direction: column; gap: 0.75rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="nav-stripe"></div>
+
+<nav>
+  <a class="nav-logo" href="#">
+    <img src="LOGO_TIMELINE_VERTICAL.png" alt="Timeline">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#works">Works</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-reel">
+    <!--
+      SUBSTITUA pelo reel:
+      GIF:   <img src="reel.gif" style="width:100%;height:100%;object-fit:cover;">
+      Vídeo: <video autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"><source src="reel.mp4"></video>
+    -->
+    <div class="hero-reel-placeholder">
+      <div class="hero-bars">
+        <div class="hero-bar"></div>
+        <div class="hero-bar"></div>
+        <div class="hero-bar"></div>
+      </div>
+      <span class="hero-placeholder-label">[ Seu reel aqui ]</span>
+    </div>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-label">Motion Design Studio</p>
+    <h1 class="hero-title">
+      <span class="t1">Se tem</span><br>
+      <span class="t2">movimento,</span><br>
+      <span class="t3">a gente animou.</span>
+    </h1>
+    <p class="hero-sub">Animação 2D, motion graphics e branding em movimento — da ideia ao frame final.</p>
+    <div class="hero-tags">
+      <span class="hero-tag pk">Motion Graphics</span>
+      <span class="hero-tag bl">Animação 2D</span>
+      <span class="hero-tag gr">Branding</span>
+      <span class="hero-tag pk">Logo Animation</span>
+      <span class="hero-tag bl">Video Mapping</span>
+    </div>
+  </div>
+</section>
+
+<section id="works">
+  <div class="works-header">
+    <span class="section-label">Projetos selecionados</span>
+    <div class="section-stripe"></div>
+  </div>
+  <div class="works-grid">
+
+    <a class="card" href="#" data-titulo="Título do Projeto 01" data-tag="Motion Graphics" data-ano="2025" data-cliente="Nome do Cliente" data-tools="After Effects, Illustrator" data-desc="Descreva o Projeto 01 aqui.">
+      <div class="card-placeholder">Projeto 01</div>
+      <div class="card-overlay"><div><span class="card-title">Título do Projeto 01</span><span class="card-tag">Motion Graphics</span></div></div>
+    </a>
+
+    <a class="card" href="#" data-titulo="Título do Projeto 02" data-tag="Animação 2D" data-ano="2025" data-cliente="Nome do Cliente" data-tools="After Effects, Photoshop" data-desc="Descreva o Projeto 02 aqui.">
+      <div class="card-placeholder">Projeto 02</div>
+      <div class="card-overlay"><div><span class="card-title">Título do Projeto 02</span><span class="card-tag">Animação 2D</span></div></div>
+    </a>
+
+    <a class="card" href="#" data-titulo="Título do Projeto 03" data-tag="Branding em Movimento" data-ano="2025" data-cliente="Nome do Cliente" data-tools="After Effects, Illustrator" data-desc="Descreva o Projeto 03 aqui.">
+      <div class="card-placeholder">Projeto 03</div>
+      <div class="card-overlay"><div><span class="card-title">Título do Projeto 03</span><span class="card-tag">Branding em Movimento</span></div></div>
+    </a>
+
+    <a class="card" href="#" data-titulo="Título do Projeto 04" data-tag="Logo Animation" data-ano="2024" data-cliente="Nome do Cliente" data-tools="After Effects" data-desc="Descreva o Projeto 04 aqui.">
+      <div class="card-placeholder">Projeto 04</div>
+      <div class="card-overlay"><div><span class="card-title">Título do Projeto 04</span><span class="card-tag">Logo Animation</span></div></div>
+    </a>
+
+    <a class="card" href="#" data-titulo="Título do Projeto 05" data-tag="Video Mapping" data-ano="2024" data-cliente="Nome do Cliente" data-tools="After Effects, Resolume" data-desc="Descreva o Projeto 05 aqui.">
+      <div class="card-placeholder">Projeto 05</div>
+      <div class="card-overlay"><div><span class="card-title">Título do Projeto 05</span><span class="card-tag">Video Mapping</span></div></div>
+    </a>
+
+    <a class="card" href="#" data-titulo="Título do Projeto 06" data-tag="Motion Graphics" data-ano="2024" data-cliente="Nome do Cliente" data-tools="After Effects" data-desc="Descreva o Projeto 06 aqui.">
+      <div class="card-placeholder">Projeto 06</div>
+      <div class="card-overlay"><div><span class="card-title">Título do Projeto 06</span><span class="card-tag">Motion Graphics</span></div></div>
+    </a>
+
+    <a class="card" href="#" data-titulo="Título do Projeto 07" data-tag="Animação 2D" data-ano="2024" data-cliente="Nome do Cliente" data-tools="After Effects, Photoshop" data-desc="Descreva o Projeto 07 aqui.">
+      <div class="card-placeholder">Projeto 07</div>
+      <div class="card-overlay"><div><span class="card-title">Título do Projeto 07</span><span class="card-tag">Animação 2D</span></div></div>
+    </a>
+
+    <a class="card" href="#" data-titulo="Título do Projeto 08" data-tag="Character Animation" data-ano="2024" data-cliente="Nome do Cliente" data-tools="After Effects, Illustrator" data-desc="Descreva o Projeto 08 aqui.">
+      <div class="card-placeholder">Projeto 08</div>
+      <div class="card-overlay"><div><span class="card-title">Título do Projeto 08</span><span class="card-tag">Character Animation</span></div></div>
+    </a>
+
+    <a class="card" href="#" data-titulo="Título do Projeto 09" data-tag="Explainer Video" data-ano="2023" data-cliente="Nome do Cliente" data-tools="After Effects, Illustrator" data-desc="Descreva o Projeto 09 aqui.">
+      <div class="card-placeholder">Projeto 09</div>
+      <div class="card-overlay"><div><span class="card-title">Título do Projeto 09</span><span class="card-tag">Explainer Video</span></div></div>
+    </a>
+
+    <a class="card" href="#" data-titulo="Título do Projeto 10" data-tag="Branding em Movimento" data-ano="2023" data-cliente="Nome do Cliente" data-tools="After Effects" data-desc="Descreva o Projeto 10 aqui.">
+      <div class="card-placeholder">Projeto 10</div>
+      <div class="card-overlay"><div><span class="card-title">Título do Projeto 10</span><span class="card-tag">Branding em Movimento</span></div></div>
+    </a>
+
+    <a class="card" href="#" data-titulo="Título do Projeto 11" data-tag="Title Animation" data-ano="2023" data-cliente="Nome do Cliente" data-tools="After Effects, Cinema 4D" data-desc="Descreva o Projeto 11 aqui.">
+      <div class="card-placeholder">Projeto 11</div>
+      <div class="card-overlay"><div><span class="card-title">Título do Projeto 11</span><span class="card-tag">Title Animation</span></div></div>
+    </a>
+
+    <a class="card" href="#" data-titulo="Título do Projeto 12" data-tag="Logo Animation" data-ano="2023" data-cliente="Nome do Cliente" data-tools="After Effects" data-desc="Descreva o Projeto 12 aqui.">
+      <div class="card-placeholder">Projeto 12</div>
+      <div class="card-overlay"><div><span class="card-title">Título do Projeto 12</span><span class="card-tag">Logo Animation</span></div></div>
+    </a>
+
+    <a class="card" href="#" data-titulo="Título do Projeto 13" data-tag="Motion Graphics" data-ano="2023" data-cliente="Nome do Cliente" data-tools="After Effects, Premiere" data-desc="Descreva o Projeto 13 aqui.">
+      <div class="card-placeholder">Projeto 13</div>
+      <div class="card-overlay"><div><span class="card-title">Título do Projeto 13</span><span class="card-tag">Motion Graphics</span></div></div>
+    </a>
+
+    <a class="card" href="#" data-titulo="Título do Projeto 14" data-tag="Animação 2D" data-ano="2022" data-cliente="Nome do Cliente" data-tools="After Effects, Illustrator" data-desc="Descreva o Projeto 14 aqui.">
+      <div class="card-placeholder">Projeto 14</div>
+      <div class="card-overlay"><div><span class="card-title">Título do Projeto 14</span><span class="card-tag">Animação 2D</span></div></div>
+    </a>
+
+    <a class="card" href="#" data-titulo="Título do Projeto 15" data-tag="Video Mapping" data-ano="2022" data-cliente="Nome do Cliente" data-tools="After Effects, Resolume" data-desc="Descreva o Projeto 15 aqui.">
+      <div class="card-placeholder">Projeto 15</div>
+      <div class="card-overlay"><div><span class="card-title">Título do Projeto 15</span><span class="card-tag">Video Mapping</span></div></div>
+    </a>
+
+  </div>
+</section>
+
+<section class="about" id="about">
+  <p class="about-label">Sobre</p>
+  <p class="about-text">
+    Somos a <strong>Timeline</strong> — um estúdio de motion design com [X] anos criando animações que dão vida a marcas e contam histórias que ficam na memória.
+  </p>
+  <div class="contact-links" id="contact">
+    <a href="mailto:contato@timeline.com.br">Email</a>
+    <a href="https://instagram.com/timeline" target="_blank">Instagram</a>
+    <a href="https://behance.net/timeline" target="_blank">Behance</a>
+    <a href="https://vimeo.com/timeline" target="_blank">Vimeo</a>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Timeline — Todos os direitos reservados</span>
+  <a class="footer-logo" href="#">
+    <img src="LOGO_TIMELINE_VERTICAL.png" alt="Timeline">
+  </a>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top  = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+
+  const cards = Array.from(document.querySelectorAll('.card[data-titulo]'));
+  cards.forEach((card, i) => {
+    const d = card.dataset;
+    const next    = cards[i + 1];
+    const nextTit = next ? next.dataset.titulo : cards[0].dataset.titulo;
+    const p = new URLSearchParams({
+      titulo: d.titulo||'', tag: d.tag||'', ano: d.ano||'',
+      cliente: d.cliente||'', tools: d.tools||'',
+      desc: d.desc||'', next: nextTit,
+    });
+    card.href = 'projeto.html?' + p.toString();
+  });
+</script>
+
+</body>
+</html>
