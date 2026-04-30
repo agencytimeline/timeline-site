@@ -366,115 +366,94 @@
 
   /* ══ FUNDADORES ══ */
   .fundadores-section {
-    padding: 6rem 2.5rem;
+    padding: 6rem 2.5rem 7rem;
     border-top: 1px solid var(--border);
+    text-align: center;
   }
 
-  .fundadores-header {
-    margin-bottom: 4rem;
-  }
+  .fundadores-header { margin-bottom: 3rem; }
 
   .fundadores-title {
     font-family: 'Syne', sans-serif;
-    font-size: clamp(2rem, 5vw, 4rem);
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.03em;
-    color: var(--text);
-    margin-top: 1.5rem;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800; line-height: 1;
+    letter-spacing: -0.02em; color: var(--text);
+    margin-top: 1.5rem; text-align: center;
   }
   .fundadores-title span { color: var(--pink); }
 
+  .fundadores-subtitle {
+    font-size: 0.8rem; color: var(--muted);
+    margin-top: 1rem; letter-spacing: 0.02em;
+  }
+
   .fundadores-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2px;
+    display: flex; gap: 2rem;
+    justify-content: center; flex-wrap: wrap;
+    max-width: 680px; margin: 0 auto;
   }
 
   .founder-card {
-    background: var(--surface);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    width: 300px; display: flex;
+    flex-direction: column; overflow: visible;
+    background: transparent;
   }
 
   .founder-photo-wrap {
-    position: relative;
-    aspect-ratio: 4/3;
-    overflow: hidden;
+    position: relative; width: 100%;
+    aspect-ratio: 3/4; overflow: hidden;
+    background: var(--surface);
   }
 
   .founder-photo {
     width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.5s ease;
-    filter: grayscale(20%);
+    object-fit: cover; object-position: top center;
+    display: block; transition: transform 0.5s ease;
+    filter: grayscale(10%);
   }
-
-  .founder-card:hover .founder-photo {
-    transform: scale(1.04);
-    filter: grayscale(0%);
-  }
+  .founder-card:hover .founder-photo { transform: scale(1.04); filter: grayscale(0%); }
 
   .founder-photo-bar {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 3px;
+    position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
     background: linear-gradient(90deg, var(--pink), var(--blue), var(--green));
   }
 
   .founder-info {
-    padding: 2rem 2rem 2.5rem;
-    background: var(--surface);
-    flex: 1;
+    padding: 1.25rem 1.25rem 1.5rem;
+    background: #fff; flex: 1; text-align: left;
   }
 
   .founder-role {
-    font-size: 0.6rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--pink);
-    display: block;
-    margin-bottom: 0.5rem;
+    font-size: 0.58rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #888;
+    display: block; margin-bottom: 0.35rem;
+    font-family: 'DM Mono', monospace;
   }
 
   .founder-name {
     font-family: 'Syne', sans-serif;
-    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    margin-bottom: 1.25rem;
+    font-size: 1rem; font-weight: 800;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: #0a0a0a; margin-bottom: 0.85rem;
   }
 
   .founder-bio {
-    font-size: 0.78rem;
-    line-height: 1.8;
-    color: var(--muted);
-    margin-bottom: 1.75rem;
+    font-size: 0.68rem; line-height: 1.75; color: #444;
+    margin-bottom: 1.25rem;
+    font-family: 'DM Mono', monospace; font-weight: 300;
   }
 
-  .founder-links {
-    display: flex;
-    gap: 1rem;
-  }
+  .founder-links { display: flex; gap: 0.5rem; }
 
   .founder-link {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1px solid #ddd; color: #0a0a0a;
     text-decoration: none;
-    border: 1px solid var(--border);
-    padding: 0.4rem 0.9rem 0.4rem 0.7rem;
-    border-radius: 100px;
-    transition: color 0.2s, border-color 0.2s;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
   }
-  .founder-link:hover { color: var(--pink); border-color: rgba(217,102,224,0.5); }
+  .founder-link:hover { background: var(--pink); border-color: var(--pink); color: #fff; }
+  .founder-link svg { width: 14px; height: 14px; }
 
   /* ══ RESPONSIVE ══ */
   @media (max-width: 900px) {
@@ -738,8 +717,8 @@
 
     <div class="sobre-stats">
       <div class="stat stagger-child"><span class="stat-num" style="color:var(--pink)">+5</span><span class="stat-label">anos de mercado</span></div>
-      <div class="stat stagger-child" style="transition-delay:0.1s"><span class="stat-num" style="color:var(--blue)">+1000</span><span class="stat-label">projetos entregues</span></div>
-      <div class="stat stagger-child" style="transition-delay:0.2s"><span class="stat-num" style="color:var(--green)">2D & 3D</span><span class="stat-label">animação & motion</span></div>
+      <div class="stat stagger-child" style="transition-delay:0.1s"><span class="stat-num" style="color:var(--blue)">+150</span><span class="stat-label">projetos entregues</span></div>
+      <div class="stat stagger-child" style="transition-delay:0.2s"><span class="stat-num" style="color:var(--green)">2D/3D</span><span class="stat-label">animação & motion</span></div>
     </div>
 
     <div class="contact-links" id="contact" style="margin-top:2.5rem;">
@@ -764,14 +743,13 @@
 <section class="fundadores-section" id="fundadores">
 
   <div class="fundadores-header">
-    <div class="works-header" style="padding:0 0 1rem; width:100%;">
-      <span class="section-label fade-up">Fundadores</span>
-      <div class="section-stripe stripe-anim"></div>
+    <div class="works-header" style="padding:0 0 1rem; width:100%; justify-content:center;">
+      <span class="section-label fade-up" style="text-align:center;">Fundadores</span>
     </div>
     <h2 class="fundadores-title">
-      <span class="line-wrap"><span class="line-inner">Conheça as mentes</span></span>
-      <span class="line-wrap"><span class="line-inner">por trás da <span style="color:var(--pink)">Timeline.</span></span></span>
+      <span class="line-wrap" style="display:block;text-align:center;"><span class="line-inner">FUNDADORES</span></span>
     </h2>
+    <p class="fundadores-subtitle fade-up" style="transition-delay:0.2s">Conheça as mentes por trás da Timeline.</p>
   </div>
 
   <div class="fundadores-grid">
