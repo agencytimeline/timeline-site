@@ -548,8 +548,292 @@
     footer { padding: 1.5rem 1.25rem; flex-direction: column; gap: 0.75rem; text-align: center; }
   }
 </style>
+
+<!-- ═══════════════════════════════════════════
+     SPLASH SCREEN — CSS
+     Injetado sem alterar o código original
+═══════════════════════════════════════════ -->
+<style id="splash-styles">
+
+  /* ── Trava o scroll enquanto a splash está ativa ── */
+  body.splash-active {
+    overflow: hidden;
+  }
+
+  /* ── Container principal ── */
+  #splash {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    /* Entrada: já visível */
+    opacity: 1;
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Estado de saída */
+  #splash.splash-exit {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* ── Vídeo fullscreen ── */
+  #splash-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scale(1);
+    transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 1.1s ease;
+    will-change: transform, filter;
+  }
+
+  /* Zoom + blur aplicados na saída */
+  #splash.splash-exit #splash-video {
+    transform: scale(1.08);
+    filter: blur(6px);
+  }
+
+  /* ── Overlay escuro sobre o vídeo (vignette) ── */
+  #splash-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.65) 100%),
+      linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── Logo acima do botão ── */
+  #splash-logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateY(-80px);
+    z-index: 2;
+    opacity: 0;
+    animation: splashLogoIn 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+  }
+
+  #splash-logo img {
+    height: 52px;
+    width: auto;
+    display: block;
+    filter: brightness(1);
+  }
+
+  @keyframes splashLogoIn {
+    from { opacity: 0; transform: translate(-50%, -50%) translateY(-60px); }
+    to   { opacity: 1; transform: translate(-50%, -50%) translateY(-80px); }
+  }
+
+  /* ── Divisor fio abaixo da logo ── */
+  #splash-divider {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateY(-8px);
+    z-index: 2;
+    width: 0;
+    height: 1px;
+    background: rgba(255,255,255,0.25);
+    animation: splashLineIn 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards;
+  }
+
+  @keyframes splashLineIn {
+    to { width: 200px; }
+  }
+
+  /* ── Cursor verde sobre a splash ──
+     Eleva o z-index acima do z-index 99999 da splash.
+     A cor é definida via JS na inicialização.
+  */
+  #splash ~ .cursor,
+  body.splash-active .cursor {
+    z-index: 999999 !important;
+  }
+
+  /* ── Botão de entrada ── */
+  #splash-btn {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+
+    font-family: 'DM Mono', 'Courier New', monospace;
+    font-size: 0.65rem;
+    font-weight: 400;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.85);
+
+    /* Fundo real do botão */
+    background: transparent;
+    padding: 1rem 2.5rem;
+    border-radius: 100px;
+    cursor: none;
+    white-space: nowrap;
+
+    /* Remove borda nativa — usamos pseudo-elemento */
+    border: none;
+    outline: none;
+
+    /* Entrada animada */
+    opacity: 0;
+    animation: splashBtnIn 1s cubic-bezier(0.16, 1, 0.3, 1) 1s forwards;
+
+    /* Transições de conteúdo */
+    transition:
+      color 0.45s ease,
+      box-shadow 0.45s ease,
+      background-color 0.45s ease;
+  }
+
+  /* Borda degradê com pseudo-elemento (border-image não funciona com border-radius) */
+  #splash-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 100px;
+    padding: 1px; /* espessura da borda */
+    background: linear-gradient(
+      90deg,
+      rgba(217,102,224,0.6)   0%,
+      rgba(45,127,212,0.6)   50%,
+      rgba(0,212,138,0.6)   100%
+    );
+    /* Máscara: mostra só a borda */
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    transition: opacity 0.45s ease;
+    pointer-events: none;
+  }
+
+  /* No hover: borda fica mais viva */
+  #splash-btn:hover::before {
+    background: linear-gradient(
+      90deg,
+      rgba(217,102,224,1) 0%,
+      rgba(45,127,212,0.9) 50%,
+      rgba(0,212,138,1) 100%
+    );
+  }
+
+  #splash-btn:hover {
+    color: #fff;
+    background-color: rgba(217,102,224,0.07);
+    box-shadow:
+      0 0 28px rgba(217,102,224,0.18),
+      0 0 60px rgba(0,212,138,0.1),
+      inset 0 0 24px rgba(0,212,138,0.04);
+  }
+
+  /* ── Pulso sutil no botão (antes do hover) ── */
+  @keyframes splashBtnPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(217,102,224,0); }
+    50%       { box-shadow: 0 0 0 8px rgba(217,102,224,0.08); }
+  }
+
+  #splash-btn.ready {
+    animation: splashBtnPulse 2.8s ease-in-out infinite;
+  }
+
+  /* ── Hint de scroll / skip (canto inferior) ── */
+  #splash-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    opacity: 0;
+    animation: splashBtnIn 0.8s ease 1.4s forwards;
+    cursor: none;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  #splash-hint:hover { color: rgba(255,255,255,0.55); }
+
+  /* ── Faixa colorida no bottom (identidade) ── */
+  #splash-stripe {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #d966e0 0%, #2d7fd4 50%, #00d48a 100%);
+    z-index: 2;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: splashStripe 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+  }
+
+  @keyframes splashStripe {
+    to { transform: scaleX(1); }
+  }
+
+  /* ── Ocultar cursor padrão no splash ── */
+  #splash * { cursor: none; }
+
+</style>
 </head>
 <body>
+
+<!-- ═══════════════════════════════════════════
+     SPLASH SCREEN — HTML
+     Injetado sem alterar o código original
+═══════════════════════════════════════════ -->
+<div id="splash">
+
+  <!-- Vídeo de fundo (reel.mp4 — independente do showreel.mp4 do site) -->
+  <video
+    id="splash-video"
+    autoplay
+    muted
+    playsinline
+    preload="auto"
+  >
+    <source src="reel.mp4" type="video/mp4">
+  </video>
+
+  <!-- Vignette / overlay -->
+  <div id="splash-overlay"></div>
+
+  <!-- Logo centralizada -->
+  <div id="splash-logo">
+    <img src="logo_horizontal.png" alt="Timeline Studio">
+  </div>
+
+  <!-- Fio divisor -->
+  <div id="splash-divider"></div>
+
+  <!-- Botão de entrada -->
+  <button id="splash-btn">conheça a timeline studio</button>
+
+  <!-- Hint skip -->
+  <span id="splash-hint">pressione para entrar</span>
+
+  <!-- Stripe colorida (identidade) -->
+  <div id="splash-stripe"></div>
+
+</div>
+<!-- ═══════════════════════════════════════════ -->
 
 <div class="cursor" id="cursor"></div>
 <div class="nav-stripe"></div>
@@ -1129,7 +1413,121 @@ if (window.innerWidth > 768) {
   window.addEventListener('scroll', () => {
     if (heroReel) heroReel.style.transform = `translateY(${window.scrollY * 0.35}px)`;
   }, { passive: true });
-}
+}  /* ← fecha o if do parallax */
+
+/* ═══════════════════════════════════════════
+   SPLASH SCREEN — JS  (bloco independente)
+═══════════════════════════════════════════ */
+(function() {
+
+  const splash = document.getElementById('splash');
+  const video  = document.getElementById('splash-video');
+  const btn    = document.getElementById('splash-btn');
+  const hint   = document.getElementById('splash-hint');
+
+  if (!splash || !btn) return;
+
+  /* ── Travar scroll do site enquanto splash está ativa ── */
+  document.body.classList.add('splash-active');
+
+  /* ── Cursor verde sobre a splash ──
+     O .cursor já existe no DOM e tem listener de mousemove global,
+     mas o z-index precisa superar o z-index 99999 da splash.
+     Também aplicamos a cor verde (#00d48a) enquanto estamos na splash.
+  */
+  const cursor = document.getElementById('cursor');
+  if (cursor) {
+    cursor.style.zIndex      = '999999';
+    cursor.style.background  = '#00d48a';   /* verde da marca */
+    cursor.style.borderColor = '#00d48a';
+  }
+
+  /* Garantir que o mousemove mova o cursor mesmo com splash na frente */
+  document.addEventListener('mousemove', function splashMove(e) {
+    if (!cursor) return;
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top  = e.clientY + 'px';
+  });
+
+  /* Hover do botão → expande cursor */
+  if (cursor) {
+    btn.addEventListener('mouseenter', () => {
+      cursor.classList.add('hover');
+      cursor.style.borderColor = '#00d48a';
+    });
+    btn.addEventListener('mouseleave', () => {
+      cursor.classList.remove('hover');
+    });
+    if (hint) {
+      hint.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+      hint.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    }
+  }
+
+  /* ── Autoplay com fallback ── */
+  if (video) {
+    video.play().catch(() => { /* silencioso se bloqueado */ });
+  }
+
+  /* ── Pulso no botão após 1.6s ── */
+  setTimeout(() => { btn.classList.add('ready'); }, 1600);
+
+  /* ── Saída cinematográfica ── */
+  function exitSplash() {
+    if (splash.classList.contains('splash-exit')) return; /* guard duplo clique */
+
+    btn.style.pointerEvents  = 'none';
+    if (hint) hint.style.pointerEvents = 'none';
+    btn.classList.remove('ready');
+
+    /* 1. Disparar animação CSS de saída */
+    splash.classList.add('splash-exit');
+
+    /* 2. Após a transição de opacidade terminar → limpar */
+    const TRANSITION_MS = 1100; /* igual ao valor CSS */
+    setTimeout(() => {
+
+      /* Parar vídeo e liberar memória */
+      if (video) {
+        video.pause();
+        try { video.removeAttribute('src'); video.load(); } catch(e) {}
+      }
+
+      /* Remover splash do DOM */
+      splash.remove();
+
+      /* Devolver cor original ao cursor */
+      if (cursor) {
+        cursor.style.background  = '';   /* volta ao CSS original (#d966e0) */
+        cursor.style.borderColor = '';
+        cursor.style.zIndex      = '9999';
+      }
+
+      /* Liberar scroll */
+      document.body.classList.remove('splash-active');
+
+      /* Disparar animações da hero (sand.black style) */
+      setTimeout(() => {
+        document.querySelectorAll(
+          '.hero .line-wrap, .hero .fade-up, .hero .stagger-child'
+        ).forEach(el => el.classList.add('is-visible'));
+      }, 80);
+
+    }, TRANSITION_MS);
+  }
+
+  /* Listeners de saída */
+  btn.addEventListener('click',   exitSplash);
+  if (hint) hint.addEventListener('click', exitSplash);
+  document.addEventListener('keydown', function onKey(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      document.removeEventListener('keydown', onKey);
+      exitSplash();
+    }
+  });
+
+})();
+/* ═══════════════════════════════════════════ */
 </script>
 
 </body>
