@@ -574,14 +574,15 @@
       GIF:   <img src="reel.gif" style="width:100%;height:100%;object-fit:cover;">
       Vídeo: <video autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"><source src="reel.mp4"></video>
     -->
-    <div class="hero-reel-placeholder">
-      <div class="hero-bars">
-        <div class="hero-bar"></div>
-        <div class="hero-bar"></div>
-        <div class="hero-bar"></div>
-      </div>
-      <span class="hero-placeholder-label">[ Seu reel aqui ]</span>
-    </div>
+    <video
+      autoplay
+      muted
+      loop
+      playsinline
+      style="width:100%;height:100%;object-fit:cover;display:block;"
+    >
+      <source src="showreel.mp4" type="video/mp4">
+    </video>
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
