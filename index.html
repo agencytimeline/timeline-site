@@ -274,13 +274,223 @@
   .footer-logo img { height: 22px; width: auto; opacity: 0.45; transition: opacity 0.2s; }
   .footer-logo:hover img { opacity: 1; }
 
+  /* ══ SOBRE A EMPRESA ══ */
+  .sobre-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--border);
+    margin-top: 5rem;
+  }
+
+  .sobre-texto {
+    padding: 6rem 3rem 6rem 2.5rem;
+    border-right: 1px solid var(--border);
+  }
+
+  .sobre-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.6rem, 3vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 2rem;
+  }
+  .sobre-title span { color: var(--pink); }
+
+  .sobre-body {
+    font-size: 0.82rem;
+    line-height: 1.8;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .sobre-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .stat { display: flex; flex-direction: column; gap: 0.3rem; }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem; font-weight: 800;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .sobre-logo-block {
+    background: #0d0d0d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 3rem;
+    gap: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sobre-logo-img {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  .sobre-logo-deco {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .deco-bar {
+    height: 14px;
+    border-radius: 2px;
+    opacity: 0.85;
+  }
+
+  /* ══ FUNDADORES ══ */
+  .fundadores-section {
+    padding: 6rem 2.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .fundadores-header {
+    margin-bottom: 4rem;
+  }
+
+  .fundadores-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-top: 1.5rem;
+  }
+  .fundadores-title span { color: var(--pink); }
+
+  .fundadores-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+
+  .founder-card {
+    background: var(--surface);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .founder-photo-wrap {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+  }
+
+  .founder-photo {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+    filter: grayscale(20%);
+  }
+
+  .founder-card:hover .founder-photo {
+    transform: scale(1.04);
+    filter: grayscale(0%);
+  }
+
+  .founder-photo-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--pink), var(--blue), var(--green));
+  }
+
+  .founder-info {
+    padding: 2rem 2rem 2.5rem;
+    background: var(--surface);
+    flex: 1;
+  }
+
+  .founder-role {
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--pink);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .founder-name {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+
+  .founder-bio {
+    font-size: 0.78rem;
+    line-height: 1.8;
+    color: var(--muted);
+    margin-bottom: 1.75rem;
+  }
+
+  .founder-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .founder-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.9rem 0.4rem 0.7rem;
+    border-radius: 100px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .founder-link:hover { color: var(--pink); border-color: rgba(217,102,224,0.5); }
+
+  /* ══ RESPONSIVE ══ */
+  @media (max-width: 900px) {
+    .sobre-section { grid-template-columns: 1fr; }
+    .sobre-texto { border-right: none; border-bottom: 1px solid var(--border); padding: 4rem 2rem; }
+    .sobre-logo-block { padding: 3rem 2rem; }
+    .fundadores-grid { grid-template-columns: 1fr; }
+  }
+
   @media (max-width: 600px) {
     nav { padding: 0 1.25rem; }
     .nav-links { gap: 1.5rem; }
     .hero { padding-left: 1.25rem; padding-bottom: 3.5rem; }
     .works-header { padding: 4rem 1.25rem 2rem; }
     .works-grid { grid-template-columns: 1fr; }
-    .about { padding: 5rem 1.25rem 4rem; }
+    .fundadores-section { padding: 4rem 1.25rem; }
     footer { padding: 1.5rem 1.25rem; flex-direction: column; gap: 0.75rem; text-align: center; }
   }
 </style>
@@ -296,8 +506,9 @@
   </a>
   <ul class="nav-links">
     <li><a href="#works">Works</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#fundadores">Fundadores</a></li>
+    <li><a href="#contact">Contato</a></li>
   </ul>
 </nav>
 
@@ -421,72 +632,135 @@
   </div>
 </section>
 
-<section class="about" id="about">
-  <p class="about-label">Sobre</p>
-  <p class="about-text">
-    Somos a <strong>Timeline</strong> — um estúdio de motion design com [X] anos criando animações que dão vida a marcas e contam histórias que ficam na memória.
-  </p>
-  <div class="contact-links" id="contact">
-    <a href="mailto:contato@timeline.com.br">Email</a>
-    <a href="https://instagram.com/timeline" target="_blank">Instagram</a>
-    <a href="https://behance.net/timeline" target="_blank">Behance</a>
-    <a href="https://vimeo.com/timeline" target="_blank">Vimeo</a>
-  </div>
-</section>
-<section class="socios">
+<!-- ══════════════════════════════════════════
+     SEÇÃO: SOBRE A EMPRESA
+══════════════════════════════════════════ -->
+<section class="sobre-section" id="sobre">
 
-  <div class="socios-header">
-    <span class="section-label">Fundadores</span>
-    <div class="section-stripe"></div>
-  </div>
+  <!-- Lado esquerdo: texto -->
+  <div class="sobre-texto">
+    <div class="works-header" style="padding: 0 0 2.5rem;">
+      <span class="section-label">Sobre a Timeline</span>
+      <div class="section-stripe"></div>
+    </div>
 
-  <div class="socios-grid">
+    <p class="sobre-title">Na Timeline Studio,<br>atuamos há mais de<br><span>5 anos no mercado.</span></p>
 
-    <!-- SÓCIO 1 -->
-    <div class="socio-card">
-      <div class="socio-img">
-        <img src="daillan.png" alt="Daillan Rodrigues">
+    <p class="sobre-body">
+      Com uma equipe especializada em edição de vídeos, animações 2D e 3D, além de produções gráficas de alto impacto.
+    </p>
+    <p class="sobre-body">
+      Cada projeto é único. Cada frame conta uma história. Criamos experiências visuais com ritmo, emoção e propósito.
+    </p>
+    <p class="sobre-body">
+      Com atuação nacional e foco em excelência, nossa missão é elevar o padrão visual de marcas, criadores e empresas.
+    </p>
+
+    <div class="sobre-stats">
+      <div class="stat">
+        <span class="stat-num" style="color:var(--pink)">+5</span>
+        <span class="stat-label">anos de mercado</span>
       </div>
+      <div class="stat">
+        <span class="stat-num" style="color:var(--blue)">+150</span>
+        <span class="stat-label">projetos entregues</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num" style="color:var(--green)">2D/3D</span>
+        <span class="stat-label">animação & motion</span>
+      </div>
+    </div>
 
-      <div class="socio-info">
-        <span class="socio-role">CEO Timeline Studio</span>
-        <h3 class="socio-name">Daillan Rodrigues</h3>
+    <div class="contact-links" id="contact" style="margin-top:2.5rem;">
+      <a href="mailto:contato@timeline.com.br">Email</a>
+      <a href="https://instagram.com/timeline" target="_blank">Instagram</a>
+      <a href="https://behance.net/timeline" target="_blank">Behance</a>
+      <a href="https://vimeo.com/timeline" target="_blank">Vimeo</a>
+    </div>
+  </div>
 
-        <p>
-          Comecei cedo, aos 16 anos trabalhei como Designer gráfico até os 19 anos. Aos 20 anos fui cinegrafista e editor junior na TV AMAZÔNICA, filiada Globo Sat, aos 21 anos me tornei Diretor de arte e Motion na agência PWS e aos 23 anos dei início a carreira como editor de vídeo e Creator.
+  <!-- Lado direito: logo horizontal grande -->
+  <div class="sobre-logo-block">
+    <img src="logo_horizontal.png" alt="Timeline" class="sobre-logo-img">
+    <div class="sobre-logo-deco">
+      <div class="deco-bar" style="background:var(--pink); width:100%;"></div>
+      <div class="deco-bar" style="background:var(--blue); width:77%;"></div>
+      <div class="deco-bar" style="background:var(--green); width:54%;"></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════
+     SEÇÃO: FUNDADORES
+══════════════════════════════════════════ -->
+<section class="fundadores-section" id="fundadores">
+
+  <div class="fundadores-header">
+    <div class="works-header" style="padding:0 0 1rem; width:100%;">
+      <span class="section-label">Fundadores</span>
+      <div class="section-stripe"></div>
+    </div>
+    <h2 class="fundadores-title">Conheça as mentes<br>por trás da <span>Timeline.</span></h2>
+  </div>
+
+  <div class="fundadores-grid">
+
+    <!-- DAILLAN -->
+    <div class="founder-card">
+      <div class="founder-photo-wrap">
+        <img src="daillan.png" alt="Daillan Rodrigues" class="founder-photo">
+        <div class="founder-photo-bar"></div>
+      </div>
+      <div class="founder-info">
+        <span class="founder-role">CEO Timeline Studio</span>
+        <h3 class="founder-name">Daillan Rodrigues</h3>
+        <p class="founder-bio">
+          Comecei cedo, aos 16 anos trabalhei como Designer gráfico até os 19 anos. Aos 20 anos fui cinegrafista e editor junior na TV AMAZÔNICA, filiada Globo Sat, aos 21 anos me tornei Diretor de arte e Motion na agência PWS e aos 23 anos dei início à carreira como editor de vídeo e Creator.
         </p>
-
-        <div class="socio-links">
-          <a href="#">Instagram</a>
-          <a href="#">LinkedIn</a>
+        <div class="founder-links">
+          <a href="#" class="founder-link">
+            <!-- Instagram icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
+            Instagram
+          </a>
+          <a href="#" class="founder-link">
+            <!-- LinkedIn icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 0 1 4 0v4M11 10v7"/></svg>
+            LinkedIn
+          </a>
         </div>
       </div>
     </div>
 
-    <!-- SÓCIO 2 -->
-    <div class="socio-card">
-      <div class="socio-img">
-        <img src="lilhiquer.png" alt="Lílhiquer Freitas">
+    <!-- LÍLHIQUER -->
+    <div class="founder-card">
+      <div class="founder-photo-wrap">
+        <img src="lilhiquer.png" alt="Lílhiquer Freitas" class="founder-photo">
+        <div class="founder-photo-bar" style="background: linear-gradient(90deg, var(--blue), var(--green));"></div>
       </div>
-
-      <div class="socio-info">
-        <span class="socio-role">COO Timeline Studio</span>
-        <h3 class="socio-name">Lílhiquer Freitas</h3>
-
-        <p>
-          Trabalho com comunicação visual desde os 18 anos, me especializei como motion designer há mais de 6 anos. Sou nortista, do Acre, possuo vasta experiência com animação de campanhas publicitárias, identidade visual, conteúdo para redes sociais, selos e material gráfico online e offline, no geral.
+      <div class="founder-info">
+        <span class="founder-role">COO Timeline Studio</span>
+        <h3 class="founder-name">Lílhiquer Freitas</h3>
+        <p class="founder-bio">
+          Trabalho com comunicação visual desde os 18 anos, me especializei como motion designer há mais de 5 anos. Sou nortista, do Acre, possuo vasta experiência com animação de campanhas publicitárias, identidade visual, conteúdo para redes sociais, selos e material gráfico online e offline, no geral.
         </p>
-
-        <div class="socio-links">
-          <a href="#">Instagram</a>
-          <a href="#">LinkedIn</a>
+        <div class="founder-links">
+          <a href="#" class="founder-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
+            Instagram
+          </a>
+          <a href="#" class="founder-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 0 1 4 0v4M11 10v7"/></svg>
+            LinkedIn
+          </a>
         </div>
       </div>
     </div>
 
   </div>
-
 </section>
+
 <footer>
   <span>© 2026 Timeline — Todos os direitos reservados</span>
   <a class="footer-logo" href="#">
