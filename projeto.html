@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projeto | Timeline Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:      #0a0a0a;
+    --surface: #141414;
+    --border:  rgba(255,255,255,0.08);
+    --text:    #f2f2f2;
+    --muted:   rgba(242,242,242,0.42);
+    --pink:    #d966e0;
+    --blue:    #2d7fd4;
+    --green:   #00d48a;
+    --nav-h:   72px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'DM Mono', monospace; font-weight: 300;
+    min-height: 100vh; cursor: none;
+    overflow-x: hidden;
+  }
+
+  /* ── CURSOR ── */
+  .cursor {
+    position: fixed; width: 10px; height: 10px;
+    background: var(--pink); border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: width 0.22s, height 0.22s, background 0.22s;
+  }
+  .cursor.hover {
+    width: 38px; height: 38px;
+    background: transparent; border: 1.5px solid var(--pink);
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: var(--nav-h);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2.5rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,10,10,0.88); backdrop-filter: blur(14px);
+    transform: translateY(-100%);
+    animation: navEnter 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s forwards;
+  }
+  @keyframes navEnter { to { transform: translateY(0); } }
+
+  .nav-logo {
+    display: flex; align-items: center; text-decoration: none;
+    height: calc(var(--nav-h) - 18px);
+  }
+  .nav-logo img { height: 100%; width: auto; display: block; object-fit: contain; }
+
+  .nav-back {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--text); }
+  .nav-back svg { width: 14px; height: 14px; }
+
+  .nav-stripe {
+    position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 99;
+    height: 3px;
+    background: linear-gradient(90deg, var(--pink) 0%, var(--blue) 50%, var(--green) 100%);
+    transform: scaleX(0); transform-origin: left;
+    animation: stripeIn 0.9s cubic-bezier(0.16,1,0.3,1) 0.5s forwards;
+  }
+  @keyframes stripeIn { to { transform: scaleX(1); } }
+
+  /* ── PAGE ── */
+  .page { padding-top: calc(var(--nav-h) + 3px); padding-bottom: 8rem; }
+
+  /* ── HERO DO PROJETO ── */
+  .proj-hero {
+    position: relative;
+    width: 100%; height: 56vw; max-height: 80vh; min-height: 320px;
+    overflow: hidden; background: var(--surface);
+    display: flex; align-items: flex-end;
+  }
+
+  .proj-hero video,
+  .proj-hero img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+
+  .proj-hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.2) 60%, transparent 100%);
+    z-index: 1;
+  }
+
+  /* Placeholder vídeo */
+  .proj-hero-placeholder {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+    font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.15);
+  }
+  .proj-hero-placeholder .ph-icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; color: rgba(255,255,255,0.2);
+  }
+
+  .proj-hero-content {
+    position: relative; z-index: 2;
+    padding: 0 2.5rem 3rem;
+    width: 100%;
+  }
+
+  .proj-breadcrumb {
+    font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .proj-breadcrumb .dot { color: var(--pink); }
+
+  .proj-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 4.5rem);
+    font-weight: 800; line-height: 0.95; letter-spacing: -0.03em; color: var(--text);
+  }
+
+  /* ── META BAR ── */
+  .proj-meta-bar {
+    display: flex; align-items: stretch; gap: 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .proj-meta-item {
+    flex: 1; padding: 1.5rem 2rem;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .proj-meta-item:last-child { border-right: none; }
+
+  .meta-label {
+    font-size: 0.56rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
+  }
+  .meta-value { font-size: 0.78rem; color: var(--text); }
+
+  .proj-tag-pill {
+    display: inline-block;
+    font-size: 0.56rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--pink); border: 1px solid rgba(217,102,224,0.35);
+    padding: 0.25rem 0.7rem; border-radius: 100px;
+    width: fit-content;
+  }
+
+  /* ── DESCRIÇÃO ── */
+  .proj-desc-section {
+    padding: 5rem 2.5rem;
+    display: grid; grid-template-columns: 1fr 2fr; gap: 5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .proj-desc-label {
+    font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .proj-desc-label::before {
+    content: ''; display: inline-block; width: 18px; height: 2px; background: var(--blue);
+  }
+
+  .proj-desc-text {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1rem, 2vw, 1.35rem);
+    font-weight: 400; line-height: 1.6; color: var(--text);
+  }
+
+  /* ── STYLEFRAMES ── */
+  .frames-section { padding: 5rem 2.5rem; border-bottom: 1px solid var(--border); }
+
+  .frames-label {
+    font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 2.5rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .frames-label::before {
+    content: ''; display: inline-block; width: 18px; height: 2px; background: var(--green);
+  }
+
+  .frames-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2px;
+  }
+
+  .frame-item {
+    position: relative; aspect-ratio: 16/9; overflow: hidden;
+    background: var(--surface); cursor: pointer;
+  }
+  .frame-item img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform 0.5s ease; filter: brightness(0.9);
+  }
+  .frame-item:hover img { transform: scale(1.04); filter: brightness(1); }
+
+  /* Linha colorida no hover */
+  .frame-item::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--pink), var(--blue), var(--green));
+    transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease;
+  }
+  .frame-item:hover::after { transform: scaleX(1); }
+
+  .frame-num {
+    position: absolute; top: 0.75rem; left: 0.75rem;
+    font-size: 0.56rem; letter-spacing: 0.14em; color: var(--muted);
+    background: rgba(10,10,10,0.8); padding: 0.2rem 0.55rem; border-radius: 100px;
+  }
+
+  /* Placeholder frames */
+  .frame-placeholder {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(255,255,255,0.1); border: 1px dashed rgba(255,255,255,0.05);
+  }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(10,10,10,0.97);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .lightbox.active { opacity: 1; pointer-events: all; }
+  .lightbox-img { max-width: 90vw; max-height: 85vh; object-fit: contain; display: block; }
+
+  .lb-close {
+    position: absolute; top: 1.5rem; right: 2rem;
+    font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); cursor: none; background: none; border: none;
+    transition: color 0.2s;
+  }
+  .lb-close:hover { color: var(--pink); }
+
+  .lb-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: none; border: none; font-size: 0.65rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted); cursor: none; padding: 1rem;
+    transition: color 0.2s;
+  }
+  .lb-nav:hover { color: var(--text); }
+  .lb-prev { left: 1.5rem; }
+  .lb-next { right: 1.5rem; }
+
+  /* ── PRÓXIMO PROJETO ── */
+  .next-project {
+    padding: 5rem 2.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    text-decoration: none; position: relative; overflow: hidden;
+    border-top: 1px solid var(--border);
+  }
+  .next-project::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--pink), var(--blue), var(--green));
+    transform: scaleX(0); transform-origin: left; transition: transform 0.5s ease;
+  }
+  .next-project:hover::after { transform: scaleX(1); }
+
+  .next-label {
+    font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted); display: block; margin-bottom: 0.75rem;
+  }
+  .next-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.4rem, 3.5vw, 2.8rem); font-weight: 800; color: var(--text);
+  }
+  .next-arrow { font-size: 2rem; color: var(--pink); flex-shrink: 0; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 2rem 2.5rem; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  }
+  .footer-logo img { height: 20px; width: auto; opacity: 0.4; transition: opacity 0.2s; }
+  .footer-logo:hover img { opacity: 1; }
+
+  /* ── ANIMAÇÕES ── */
+  .fade-up {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  }
+  .fade-up.is-visible { opacity: 1; transform: translateY(0); }
+
+  .fade-in { opacity: 0; transition: opacity 0.8s ease; }
+  .fade-in.is-visible { opacity: 1; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 0 1.25rem; }
+    .proj-hero-content { padding: 0 1.25rem 2rem; }
+    .proj-meta-bar { flex-wrap: wrap; }
+    .proj-meta-item { flex: 1 1 50%; border-bottom: 1px solid var(--border); }
+    .proj-desc-section { grid-template-columns: 1fr; gap: 2rem; padding: 3rem 1.25rem; }
+    .frames-section { padding: 3rem 1.25rem; }
+    .frames-grid { grid-template-columns: 1fr 1fr; }
+    .next-project { padding: 3rem 1.25rem; }
+    footer { padding: 1.5rem 1.25rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+  @media (max-width: 480px) {
+    .frames-grid { grid-template-columns: 1fr; }
+    .proj-meta-item { flex: 1 1 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="nav-stripe"></div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lb-close">Fechar ✕</button>
+  <button class="lb-nav lb-prev" id="lb-prev">← Anterior</button>
+  <img class="lightbox-img" id="lb-img" src="" alt="">
+  <button class="lb-nav lb-next" id="lb-next">Próximo →</button>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index_splash.html">
+    <img src="Objeto_Inteligente_de_Vetor.png" alt="Timeline Studio"
+         onerror="this.src='logo_horizontal.png'">
+  </a>
+  <a class="nav-back" href="index_splash.html#works">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M5 12l7 7M5 12l7-7"/></svg>
+    Todos os projetos
+  </a>
+</nav>
+
+<div class="page">
+
+  <!-- ══ HERO DO PROJETO ══ -->
+  <div class="proj-hero" id="proj-hero">
+
+    <!--
+    ═══════════════════════════════════════════════════════
+    VÍDEO DO PROJETO:
+    Substitua o placeholder abaixo pelo vídeo real.
+
+    Opção 1 — Arquivo local:
+    <video autoplay muted loop playsinline>
+      <source src="videos/projeto-01.mp4" type="video/mp4">
+    </video>
+
+    Opção 2 — Vimeo (recomendado):
+    <iframe src="https://player.vimeo.com/video/SEU_ID?autoplay=1&muted=1&loop=1&background=1"
+      style="position:absolute;inset:0;width:100%;height:100%;border:none;" allowfullscreen></iframe>
+
+    Opção 3 — Imagem estática:
+    <img src="capa-projeto.jpg" alt="Projeto">
+    ═══════════════════════════════════════════════════════
+    -->
+    <div class="proj-hero-placeholder">
+      <div class="ph-icon">▶</div>
+      <span>Adicione o vídeo do projeto aqui</span>
+    </div>
+
+    <div class="proj-hero-overlay"></div>
+
+    <div class="proj-hero-content">
+      <p class="proj-breadcrumb">
+        Works <span class="dot">·</span> <span id="meta-tag">Motion Graphics</span>
+      </p>
+      <h1 class="proj-title" id="meta-titulo">Título do Projeto</h1>
+    </div>
+  </div>
+
+  <!-- ══ META BAR ══ -->
+  <div class="proj-meta-bar fade-up">
+    <div class="proj-meta-item">
+      <span class="meta-label">Categoria</span>
+      <span class="proj-tag-pill" id="mb-tag">Motion Graphics</span>
+    </div>
+    <div class="proj-meta-item">
+      <span class="meta-label">Cliente</span>
+      <span class="meta-value" id="mb-cliente">—</span>
+    </div>
+    <div class="proj-meta-item">
+      <span class="meta-label">Ano</span>
+      <span class="meta-value" id="mb-ano">2025</span>
+    </div>
+    <div class="proj-meta-item">
+      <span class="meta-label">Ferramentas</span>
+      <span class="meta-value" id="mb-tools">After Effects</span>
+    </div>
+  </div>
+
+  <!-- ══ DESCRIÇÃO ══ -->
+  <section class="proj-desc-section">
+    <div>
+      <p class="proj-desc-label">Sobre o projeto</p>
+    </div>
+    <div>
+      <p class="proj-desc-text fade-up" id="meta-desc">
+        Descreva o projeto aqui — o conceito, o processo criativo, os desafios e o que foi entregue.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══ STYLEFRAMES ══ -->
+  <section class="frames-section">
+    <p class="frames-label">Styleframes</p>
+
+    <div class="frames-grid" id="frames-grid">
+
+      <!--
+      ═══════════════════════════════════════════════════════
+      COMO ADICIONAR STYLEFRAMES:
+      Copie e cole o bloco abaixo para cada imagem,
+      substituindo src= pelo caminho da sua imagem.
+      O lightbox funciona automaticamente.
+
+      <div class="frame-item" data-src="frames/proj01-frame01.jpg">
+        <img src="frames/proj01-frame01.jpg" alt="Frame 01" loading="lazy">
+        <span class="frame-num">01</span>
+      </div>
+
+      Nomeie os arquivos: proj01-frame01.jpg, proj01-frame02.jpg ...
+      ═══════════════════════════════════════════════════════
+      -->
+
+      <!-- PLACEHOLDERS — remova quando adicionar suas imagens -->
+      <div class="frame-item">
+        <div class="frame-placeholder">Styleframe 01</div>
+        <span class="frame-num">01</span>
+      </div>
+      <div class="frame-item">
+        <div class="frame-placeholder">Styleframe 02</div>
+        <span class="frame-num">02</span>
+      </div>
+      <div class="frame-item">
+        <div class="frame-placeholder">Styleframe 03</div>
+        <span class="frame-num">03</span>
+      </div>
+      <div class="frame-item">
+        <div class="frame-placeholder">Styleframe 04</div>
+        <span class="frame-num">04</span>
+      </div>
+      <div class="frame-item">
+        <div class="frame-placeholder">Styleframe 05</div>
+        <span class="frame-num">05</span>
+      </div>
+      <div class="frame-item">
+        <div class="frame-placeholder">Styleframe 06</div>
+        <span class="frame-num">06</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ PRÓXIMO PROJETO ══ -->
+  <a class="next-project" href="#" id="next-link">
+    <div>
+      <span class="next-label">Próximo projeto</span>
+      <span class="next-title" id="next-title">Próximo Projeto</span>
+    </div>
+    <span class="next-arrow">→</span>
+  </a>
+
+</div>
+
+<footer>
+  <span>© 2026 Timeline Studio — Todos os direitos reservados</span>
+  <a class="footer-logo" href="index_splash.html">
+    <img src="LOGO_TIMELINE_VERTICAL.png" alt="Timeline">
+  </a>
+</footer>
+
+<script>
+/* ── CURSOR ── */
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+});
+document.querySelectorAll('a, button, .frame-item').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+});
+
+/* ── LER PARÂMETROS DA URL ── */
+const params  = new URLSearchParams(window.location.search);
+const titulo  = params.get('titulo')  || 'Título do Projeto';
+const tag     = params.get('tag')     || 'Motion Graphics';
+const ano     = params.get('ano')     || '2025';
+const cliente = params.get('cliente') || '—';
+const tools   = params.get('tools')   || 'After Effects';
+const desc    = params.get('desc')    || 'Descreva o projeto aqui.';
+const nextTit = params.get('next')    || 'Próximo Projeto';
+
+/* Preencher elementos */
+document.title = titulo + ' | Timeline Studio';
+document.getElementById('meta-titulo').textContent  = titulo;
+document.getElementById('meta-tag').textContent     = tag;
+document.getElementById('mb-tag').textContent       = tag;
+document.getElementById('mb-cliente').textContent   = cliente;
+document.getElementById('mb-ano').textContent       = ano;
+document.getElementById('mb-tools').textContent     = tools;
+document.getElementById('meta-desc').textContent    = desc;
+document.getElementById('next-title').textContent   = nextTit + ' →';
+
+/* ── ANIMAÇÕES DE ENTRADA ── */
+setTimeout(() => {
+  document.querySelectorAll('.fade-up, .fade-in').forEach(el => {
+    el.classList.add('is-visible');
+  });
+}, 200);
+
+/* ── LIGHTBOX ── */
+const lightbox = document.getElementById('lightbox');
+const lbImg    = document.getElementById('lb-img');
+const framesSrcs = [];
+
+document.querySelectorAll('.frame-item[data-src]').forEach((item, i) => {
+  framesSrcs.push(item.dataset.src);
+  item.addEventListener('click', () => openLb(i));
+});
+
+let lbCurrent = 0;
+
+function openLb(i) {
+  if (!framesSrcs.length) return;
+  lbCurrent = i;
+  lbImg.src = framesSrcs[i];
+  lightbox.classList.add('active');
+}
+
+document.getElementById('lb-close').addEventListener('click', () => lightbox.classList.remove('active'));
+document.getElementById('lb-prev').addEventListener('click', () => {
+  lbCurrent = (lbCurrent - 1 + framesSrcs.length) % framesSrcs.length;
+  lbImg.src = framesSrcs[lbCurrent];
+});
+document.getElementById('lb-next').addEventListener('click', () => {
+  lbCurrent = (lbCurrent + 1) % framesSrcs.length;
+  lbImg.src = framesSrcs[lbCurrent];
+});
+document.addEventListener('keydown', e => {
+  if (!lightbox.classList.contains('active')) return;
+  if (e.key === 'Escape')      lightbox.classList.remove('active');
+  if (e.key === 'ArrowLeft')   document.getElementById('lb-prev').click();
+  if (e.key === 'ArrowRight')  document.getElementById('lb-next').click();
+});
+lightbox.addEventListener('click', e => {
+  if (e.target === lightbox) lightbox.classList.remove('active');
+});
+</script>
+
+</body>
+</html>
