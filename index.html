@@ -1,254 +1,200 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Timeline | Motion Design</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timeline | Motion Design</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-:root{
---bg:#0a0a0a;
---surface:#141414;
---border:rgba(255,255,255,0.08);
---text:#f2f2f2;
---muted:rgba(242,242,242,0.42);
---pink:#d966e0;
---blue:#2d7fd4;
---green:#00d48a;
---nav-h:72px;
-}
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --border: rgba(255,255,255,0.08);
+      --text: #f2f2f2;
+      --muted: rgba(242,242,242,0.42);
+      --pink: #d966e0;
+      --blue: #2d7fd4;
+      --green: #00d48a;
+      --nav-h: 72px;
+    }
 
-body{
-background:var(--bg);
-color:var(--text);
-font-family:'DM Mono';
-}
+    html { scroll-behavior: smooth; }
 
-/* NAV */
-nav{
-position:fixed;
-top:0;
-width:100%;
-height:var(--nav-h);
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:0 2rem;
-background:rgba(10,10,10,0.9);
-border-bottom:1px solid var(--border);
-z-index:100;
-}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-weight: 300;
+      min-height: 100vh;
+      cursor: none;
+    }
 
-.nav-links{display:flex;gap:2rem;list-style:none;}
-.nav-links a{color:var(--muted);text-decoration:none;font-size:12px;}
-.nav-links a:hover{color:#fff;}
+    .cursor {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background: var(--pink);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: 0.22s;
+    }
 
-.nav-stripe{
-position:fixed;
-top:var(--nav-h);
-width:100%;
-height:3px;
-background:linear-gradient(90deg,var(--pink),var(--blue),var(--green));
-}
+    .cursor.hover {
+      width: 38px;
+      height: 38px;
+      background: transparent;
+      border: 1.5px solid var(--pink);
+    }
 
-/* HERO */
-.hero{
-height:100vh;
-display:flex;
-align-items:flex-end;
-padding:0 2rem 4rem;
-position:relative;
-}
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-h);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2.5rem;
+      background: rgba(10,10,10,0.88);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+    }
 
-.hero-content{z-index:2;}
+    .nav-logo img { height: 100%; }
 
-.hero-title{
-font-family:'Syne';
-font-size:70px;
-line-height:0.9;
-}
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
 
-.hero-title span:nth-child(2){color:var(--pink);}
+    .nav-links a {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+    }
 
-/* WORKS */
-.works{padding:6rem 2rem;}
-.works-grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-}
+    .nav-stripe {
+      position: fixed;
+      top: var(--nav-h);
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--pink), var(--blue), var(--green));
+    }
 
-.card{
-background:#111;
-height:200px;
-display:flex;
-align-items:center;
-justify-content:center;
-}
+    .hero {
+      padding-top: calc(var(--nav-h) + 3px);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-end;
+      padding-left: 2.5rem;
+      padding-bottom: 5rem;
+    }
 
-/* NOVA SEÇÃO */
-.about-extended{
-padding:6rem 2rem;
-border-top:1px solid var(--border);
-}
+    .hero-title {
+      font-family: 'Syne';
+      font-size: clamp(3rem, 9vw, 7.5rem);
+      line-height: 0.9;
+    }
 
-.about-block{
-display:flex;
-justify-content:space-between;
-gap:4rem;
-margin-bottom:6rem;
-}
+    .hero-title .t2 { color: var(--pink); }
 
-.about-left{max-width:500px;}
+    .works-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 2px;
+      padding: 0 2px 2px;
+    }
 
-.about-title{
-font-size:12px;
-letter-spacing:3px;
-color:var(--muted);
-margin-bottom:1rem;
-}
+    .card {
+      aspect-ratio: 16/9;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-.about-desc{
-font-size:14px;
-line-height:1.8;
-}
+    .about {
+      padding: 8rem 2.5rem;
+      border-top: 1px solid var(--border);
+    }
 
-.about-right img{
-width:220px;
-}
-
-.founders{
-text-align:center;
-}
-
-.founders-title{
-font-size:32px;
-letter-spacing:5px;
-margin-bottom:10px;
-}
-
-.founders-sub{
-color:var(--muted);
-margin-bottom:3rem;
-}
-
-.founders-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:2rem;
-}
-
-.founder-card{
-background:var(--surface);
-}
-
-.founder-card img{
-width:100%;
-height:280px;
-object-fit:cover;
-}
-
-.founder-info{
-padding:20px;
-text-align:left;
-}
-
-.founder-info h3{
-margin:10px 0;
-font-family:'Syne';
-}
-
-.founder-info p{
-font-size:13px;
-color:var(--muted);
-line-height:1.6;
-}
-
-@media(max-width:768px){
-.works-grid{grid-template-columns:1fr;}
-.founders-grid{grid-template-columns:1fr;}
-.about-block{flex-direction:column;}
-}
-</style>
+    footer {
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
 </head>
 
 <body>
 
+<div class="cursor" id="cursor"></div>
 <div class="nav-stripe"></div>
 
 <nav>
-<img src="LOGO_TIMELINE_VERTICAL.png" height="40">
-<ul class="nav-links">
-<li><a href="#">Works</a></li>
-<li><a href="#">About</a></li>
-<li><a href="#">Contact</a></li>
-</ul>
+  <a class="nav-logo" href="#">
+    <img src="LOGO_TIMELINE_VERTICAL.png" alt="Timeline">
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#works">Works</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
 </nav>
 
 <section class="hero">
-<div class="hero-content">
-<h1 class="hero-title">
-Se tem <br><span>movimento,</span><br>a gente animou.
-</h1>
-</div>
+  <h1 class="hero-title">
+    <span>Se tem</span><br>
+    <span class="t2">movimento,</span><br>
+    <span>a gente animou.</span>
+  </h1>
 </section>
 
-<section class="works">
-<div class="works-grid">
-<div class="card">Projeto</div>
-<div class="card">Projeto</div>
-<div class="card">Projeto</div>
-</div>
+<section id="works">
+  <div class="works-grid">
+    <div class="card">Projeto</div>
+    <div class="card">Projeto</div>
+    <div class="card">Projeto</div>
+  </div>
 </section>
 
-<!-- NOVA SEÇÃO -->
-<section class="about-extended">
+<section class="about" id="about">
+  <p>Somos a Timeline Studio...</p>
 
-<div class="about-block">
-<div class="about-left">
-<p class="about-title">SOBRE A TIMELINE</p>
-<p class="about-desc">
-Na Timeline Studio, atuamos há mais de 5 anos no mercado com uma equipe especializada em edição de vídeos, animações 2D e 3D.<br><br>
-Cada projeto é único. Cada frame conta uma história.<br><br>
-Nossa missão é elevar o padrão visual de marcas.
-</p>
-</div>
-
-<div class="about-right">
-<img src="LOGO_TIMELINE_VERTICAL.png">
-</div>
-</div>
-
-<div class="founders">
-<p class="founders-title">FUNDADORES</p>
-<p class="founders-sub">Conheça as mentes por trás da Timeline.</p>
-
-<div class="founders-grid">
-
-<div class="founder-card">
-<img src="daillan.jpg">
-<div class="founder-info">
-<h3>DAILLAN RODRIGUES</h3>
-<p>CEO Timeline Studio. Experiência em direção de arte e motion design.</p>
-</div>
-</div>
-
-<div class="founder-card">
-<img src="lilhiquer.jpg">
-<div class="founder-info">
-<h3>LÍLHIQUER FREITAS</h3>
-<p>COO Timeline Studio. Especialista em motion e comunicação visual.</p>
-</div>
-</div>
-
-</div>
-</div>
-
+  <div id="contact">
+    <a href="#">Email</a>
+  </div>
 </section>
+
+<footer>
+  <span>© 2026 Timeline</span>
+  <img src="LOGO_TIMELINE_VERTICAL.png">
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top  = e.clientY + 'px';
+  });
+</script>
 
 </body>
 </html>
