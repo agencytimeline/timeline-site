@@ -201,7 +201,7 @@
   }
 
   /* ══════════════════════════════════════════
-     SEÇÃO: SERVIÇOS (SLIDER HORIZONTAL)
+     SEÇÃO: SERVIÇOS (CARROSSEL MUEVO-STYLE)
   ══════════════════════════════════════════ */
   .servicos-section {
     padding: 0 0 6rem;
@@ -217,119 +217,183 @@
 
   .servicos-header-left { display: flex; align-items: center; gap: 1rem; flex: 1; }
 
-  .servicos-nav-btns {
-    display: flex; gap: 0.75rem; flex-shrink: 0;
-  }
+  /* ── Setas estilo Muevo: círculos com borda degradê ── */
+  .servicos-nav-btns { display: flex; gap: 0.75rem; flex-shrink: 0; }
 
   .srv-btn {
-    width: 42px; height: 42px; border-radius: 50%;
-    border: 1px solid var(--border);
-    background: transparent; color: var(--muted);
-    display: flex; align-items: center; justify-content: center;
-    cursor: none; transition: border-color 0.2s, color 0.2s, background 0.2s;
-  }
-  .srv-btn:hover { border-color: var(--pink); color: var(--pink); background: rgba(217,102,224,0.08); }
-  .srv-btn svg { width: 16px; height: 16px; }
-
-  /* Track wrapper: mascara com blur nas laterais */
-  .servicos-track-wrap {
     position: relative;
-    overflow: hidden;
+    width: 44px; height: 44px; border-radius: 50%;
+    border: none; background: rgba(255,255,255,0.06);
+    color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+    cursor: none;
+    transition: background 0.25s, transform 0.25s;
+    overflow: visible;
   }
-  .servicos-track-wrap::before,
-  .servicos-track-wrap::after {
+  .srv-btn::before {
     content: '';
-    position: absolute; top: 0; bottom: 0; width: 120px; z-index: 2;
+    position: absolute; inset: -1px; border-radius: 50%; padding: 1px;
+    background: linear-gradient(135deg, var(--pink), var(--blue), var(--green));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    opacity: 0.5; transition: opacity 0.25s;
     pointer-events: none;
   }
-  .servicos-track-wrap::before {
-    left: 0;
-    background: linear-gradient(to right, var(--bg) 0%, transparent 100%);
-  }
-  .servicos-track-wrap::after {
-    right: 0;
-    background: linear-gradient(to left, var(--bg) 0%, transparent 100%);
+  .srv-btn:hover { background: rgba(217,102,224,0.12); transform: scale(1.08); }
+  .srv-btn:hover::before { opacity: 1; }
+  .srv-btn svg { width: 16px; height: 16px; }
+
+  /* ── Stage: área visível do carrossel ── */
+  .srv-stage {
+    position: relative;
+    width: 100%;
+    height: 520px;
+    overflow: visible;
+    display: flex; align-items: center; justify-content: center;
   }
 
-  .servicos-track {
-    display: flex; gap: 2px;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  /* ── Track: posicionamento absoluto no centro ── */
+  .srv-track {
+    position: absolute;
+    display: flex; align-items: center;
+    gap: 24px;
+    transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: transform;
-    /* drag */
     user-select: none;
   }
 
+  /* ── Card base ── */
   .servico-card {
-    flex: 0 0 320px;
-    position: relative; overflow: hidden;
-    aspect-ratio: 9/12;
+    position: relative;
+    width: 300px;
+    height: 420px;
+    border-radius: 20px;
+    overflow: hidden;
     background: var(--surface);
     cursor: none;
+    flex-shrink: 0;
+
+    /* Estado lateral: menor, desfocado, escurecido */
+    transform: scale(0.82);
+    filter: blur(3px) brightness(0.45);
+    transition:
+      transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+      filter    0.65s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity   0.65s ease;
+    opacity: 0.7;
   }
 
-  /* ─ COMO ADICIONAR IMAGEM DO SERVIÇO:
-     <img src="servico1.jpg" class="srv-img" alt="Edição de Vídeos" loading="lazy">
-  ─ */
+  /* ── Card ATIVO: maior, nítido, em destaque ── */
+  .servico-card.srv-active {
+    transform: scale(1);
+    filter: blur(0) brightness(1);
+    opacity: 1;
+    z-index: 2;
+  }
+
+  /* ── Card adjacente (1 posição do ativo): médio ── */
+  .servico-card.srv-adjacent {
+    transform: scale(0.88);
+    filter: blur(1.5px) brightness(0.6);
+    opacity: 0.85;
+    z-index: 1;
+  }
+
+  /* Imagem de fundo */
   .srv-img {
     position: absolute; inset: 0;
     width: 100%; height: 100%; object-fit: cover;
+    display: block;
     transition: transform 0.6s ease;
-    filter: brightness(0.55);
   }
-  .servico-card:hover .srv-img { transform: scale(1.05); filter: brightness(0.4); }
+  .servico-card.srv-active .srv-img { transform: scale(1.03); }
 
+  /* Placeholder */
   .srv-placeholder {
     position: absolute; inset: 0;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase;
-    color: rgba(255,255,255,0.1);
+    font-size: 0.55rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(255,255,255,0.12);
   }
 
-  /* Faixa colorida topo */
+  /* Overlay degradê escuro no card */
+  .srv-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(10,10,10,0.05) 0%,
+      rgba(10,10,10,0.3)  40%,
+      rgba(10,10,10,0.92) 100%
+    );
+    border-radius: 20px;
+  }
+
+  /* Faixa colorida no topo */
   .srv-accent {
     position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    transition: opacity 0.3s;
-    opacity: 0;
+    border-radius: 20px 20px 0 0;
   }
-  .servico-card:hover .srv-accent { opacity: 1; }
 
+  /* Conteúdo de texto */
   .srv-content {
     position: absolute; bottom: 0; left: 0; right: 0;
-    padding: 2rem 1.5rem 1.75rem;
-    background: linear-gradient(to top, rgba(10,10,10,0.95) 60%, transparent);
-    transform: translateY(4px);
-    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+    padding: 2rem 1.75rem 2rem;
   }
-  .servico-card:hover .srv-content { transform: translateY(0); }
 
   .srv-num {
-    font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase;
+    font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
     color: var(--pink); display: block; margin-bottom: 0.6rem;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s;
   }
+  .servico-card.srv-active .srv-num { opacity: 1; transform: translateY(0); }
 
   .srv-title {
     font-family: 'Syne', sans-serif; font-weight: 800;
-    font-size: 1.15rem; color: var(--text); margin-bottom: 0.75rem; line-height: 1.1;
+    font-size: 1.5rem; color: var(--text); margin-bottom: 0.75rem; line-height: 1.1;
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 0.45s ease 0.15s, transform 0.45s cubic-bezier(0.16,1,0.3,1) 0.15s;
   }
+  .servico-card.srv-active .srv-title { opacity: 1; transform: translateY(0); }
 
   .srv-desc {
-    font-size: 0.68rem; color: var(--muted); line-height: 1.65;
-    max-height: 0; overflow: hidden;
-    transition: max-height 0.4s ease, opacity 0.4s ease;
-    opacity: 0;
+    font-size: 0.72rem; color: rgba(242,242,242,0.75); line-height: 1.7;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 0.45s ease 0.22s, transform 0.45s ease 0.22s;
+    margin-bottom: 1.25rem;
   }
-  .servico-card:hover .srv-desc { max-height: 80px; opacity: 1; }
+  .servico-card.srv-active .srv-desc { opacity: 1; transform: translateY(0); }
 
-  /* progress dots */
+  /* Link "Ver projetos" */
+  .srv-link {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text); text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.25);
+    padding-bottom: 2px;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.4s ease 0.3s, transform 0.4s ease 0.3s, border-color 0.2s, color 0.2s;
+  }
+  .servico-card.srv-active .srv-link { opacity: 1; transform: translateY(0); }
+  .srv-link:hover { color: var(--green); border-color: var(--green); }
+
+  /* ── Dots indicadores ── */
   .servicos-dots {
-    display: flex; gap: 6px; justify-content: center; padding-top: 2rem;
+    display: flex; gap: 8px; justify-content: center;
+    padding-top: 2.5rem;
   }
   .srv-dot {
-    width: 24px; height: 2px; border-radius: 2px; background: var(--border);
-    transition: background 0.3s, width 0.3s;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border); border: none;
     cursor: none;
+    transition: background 0.3s, transform 0.3s, width 0.35s;
   }
-  .srv-dot.active { background: var(--pink); width: 40px; }
+  .srv-dot.active {
+    background: var(--pink);
+    width: 24px; border-radius: 4px;
+    transform: none;
+  }
 
   /* ══════════════════════════════════════════
      SEÇÃO: SOBRE A EMPRESA
@@ -1157,7 +1221,7 @@
 </section>
 
 <!-- ══════════════════════════════════════════
-     SEÇÃO: SERVIÇOS (slider horizontal)
+     SEÇÃO: SERVIÇOS (carrossel Muevo-style)
 ══════════════════════════════════════════ -->
 <section class="servicos-section" id="servicos">
 
@@ -1168,99 +1232,114 @@
     </div>
     <div class="servicos-nav-btns">
       <button class="srv-btn" id="srv-prev" aria-label="Anterior">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <button class="srv-btn" id="srv-next" aria-label="Próximo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18l6-6-6-6"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18l6-6-6-6"/></svg>
       </button>
     </div>
   </div>
 
-  <div class="servicos-track-wrap">
-    <div class="servicos-track" id="srv-track">
+  <!-- Stage: overflow visible para os cards laterais aparecerem cortados -->
+  <div class="srv-stage" id="srv-stage">
+    <div class="srv-track" id="srv-track">
 
       <!--
-        ═══════════════════════════════════════════
+        ═══════════════════════════════════════════════════════
         IMAGENS DOS SERVIÇOS:
-        Adicione dentro de cada .servico-card:
+        Adicione dentro de cada .servico-card, antes de .srv-overlay:
         <img src="servico1.jpg" class="srv-img" alt="Edição de Vídeos" loading="lazy">
-        ═══════════════════════════════════════════
+        ═══════════════════════════════════════════════════════
       -->
 
       <div class="servico-card">
         <!-- <img src="servico1.jpg" class="srv-img" alt="Edição de Vídeos" loading="lazy"> -->
         <div class="srv-placeholder">servico1.jpg</div>
+        <div class="srv-overlay"></div>
         <div class="srv-accent" style="background:linear-gradient(90deg,var(--pink),var(--blue))"></div>
         <div class="srv-content">
           <span class="srv-num">01</span>
           <h3 class="srv-title">Edição de Vídeos</h3>
           <p class="srv-desc">Corte profissional, color grade e finishing para conteúdos que convertem e encantam.</p>
+          <a class="srv-link" href="#works">↳ Ver projetos</a>
         </div>
       </div>
 
       <div class="servico-card">
         <!-- <img src="servico2.jpg" class="srv-img" alt="Motion 2D/3D" loading="lazy"> -->
         <div class="srv-placeholder">servico2.jpg</div>
+        <div class="srv-overlay"></div>
         <div class="srv-accent" style="background:linear-gradient(90deg,var(--blue),var(--green))"></div>
         <div class="srv-content">
           <span class="srv-num">02</span>
           <h3 class="srv-title">Motion 2D/3D</h3>
           <p class="srv-desc">Animações fluidas que traduzem conceitos complexos em experiências visuais memoráveis.</p>
+          <a class="srv-link" href="#works">↳ Ver projetos</a>
         </div>
       </div>
 
       <div class="servico-card">
         <!-- <img src="servico3.jpg" class="srv-img" alt="Character Animation" loading="lazy"> -->
         <div class="srv-placeholder">servico3.jpg</div>
+        <div class="srv-overlay"></div>
         <div class="srv-accent" style="background:linear-gradient(90deg,var(--green),var(--pink))"></div>
         <div class="srv-content">
           <span class="srv-num">03</span>
           <h3 class="srv-title">Character Animation</h3>
           <p class="srv-desc">Personagens com alma — rigging, expressão e movimento que criam conexão emocional.</p>
+          <a class="srv-link" href="#works">↳ Ver projetos</a>
         </div>
       </div>
 
       <div class="servico-card">
         <!-- <img src="servico4.jpg" class="srv-img" alt="Campanhas Publicitárias" loading="lazy"> -->
         <div class="srv-placeholder">servico4.jpg</div>
+        <div class="srv-overlay"></div>
         <div class="srv-accent" style="background:linear-gradient(90deg,var(--pink),var(--green))"></div>
         <div class="srv-content">
           <span class="srv-num">04</span>
           <h3 class="srv-title">Campanhas Publicitárias</h3>
           <p class="srv-desc">Da estratégia visual ao produto final — peças para TV, digital e redes sociais.</p>
+          <a class="srv-link" href="#works">↳ Ver projetos</a>
         </div>
       </div>
 
       <div class="servico-card">
         <!-- <img src="servico5.jpg" class="srv-img" alt="Documentários" loading="lazy"> -->
         <div class="srv-placeholder">servico5.jpg</div>
+        <div class="srv-overlay"></div>
         <div class="srv-accent" style="background:linear-gradient(90deg,var(--blue),var(--pink))"></div>
         <div class="srv-content">
           <span class="srv-num">05</span>
           <h3 class="srv-title">Documentários</h3>
           <p class="srv-desc">Narrativas reais com estética cinematográfica — histórias que ficam na memória.</p>
+          <a class="srv-link" href="#works">↳ Ver projetos</a>
         </div>
       </div>
 
       <div class="servico-card">
         <!-- <img src="servico6.jpg" class="srv-img" alt="Live Marketing" loading="lazy"> -->
         <div class="srv-placeholder">servico6.jpg</div>
+        <div class="srv-overlay"></div>
         <div class="srv-accent" style="background:linear-gradient(90deg,var(--green),var(--blue))"></div>
         <div class="srv-content">
           <span class="srv-num">06</span>
           <h3 class="srv-title">Live Marketing</h3>
           <p class="srv-desc">Vinhetas, bumpers e identidade visual para eventos ao vivo e transmissões institucionais.</p>
+          <a class="srv-link" href="#works">↳ Ver projetos</a>
         </div>
       </div>
 
       <div class="servico-card">
         <!-- <img src="servico7.jpg" class="srv-img" alt="Kit Live" loading="lazy"> -->
         <div class="srv-placeholder">servico7.jpg</div>
+        <div class="srv-overlay"></div>
         <div class="srv-accent" style="background:linear-gradient(90deg,var(--pink),var(--blue),var(--green))"></div>
         <div class="srv-content">
           <span class="srv-num">07</span>
           <h3 class="srv-title">Kit Live</h3>
           <p class="srv-desc">Overlays, telas, alertas e transições animadas para streams e transmissões profissionais.</p>
+          <a class="srv-link" href="#works">↳ Ver projetos</a>
         </div>
       </div>
 
@@ -1441,66 +1520,103 @@ cards.forEach((card, i) => {
   card.href = 'projeto.html?' + p.toString();
 });
 
-/* ══ SLIDER DE SERVIÇOS ══ */
+/* ══ CARROSSEL MUEVO-STYLE (card central maior + blur nos laterais) ══ */
 (function() {
+  const stage    = document.getElementById('srv-stage');
   const track    = document.getElementById('srv-track');
   const dotsWrap = document.getElementById('srv-dots');
   const prevBtn  = document.getElementById('srv-prev');
   const nextBtn  = document.getElementById('srv-next');
-  const items    = track.querySelectorAll('.servico-card');
-  const total    = items.length;
+  const cards    = Array.from(track.querySelectorAll('.servico-card'));
+  const total    = cards.length;
   let   current  = 0;
 
-  /* Criar dots */
-  items.forEach((_, i) => {
+  /* ── Criar dots ── */
+  cards.forEach((_, i) => {
     const d = document.createElement('button');
     d.className = 'srv-dot' + (i === 0 ? ' active' : '');
-    d.setAttribute('aria-label', 'Serviço ' + (i+1));
+    d.setAttribute('aria-label', 'Serviço ' + (i + 1));
     d.addEventListener('click', () => goTo(i));
     dotsWrap.appendChild(d);
   });
 
-  function getItemWidth() {
-    return items[0] ? items[0].offsetWidth + 2 : 322; /* card + gap */
+  const CARD_W  = 300;  /* largura do card em px */
+  const GAP     = 24;   /* gap entre cards em px */
+  const STEP    = CARD_W + GAP;
+
+  /* ── Aplicar estado visual a cada card ── */
+  function updateCards(idx) {
+    cards.forEach((card, i) => {
+      card.classList.remove('srv-active', 'srv-adjacent');
+      const dist = Math.abs(i - idx);
+      if (dist === 0) card.classList.add('srv-active');
+      else if (dist === 1) card.classList.add('srv-adjacent');
+    });
   }
 
-  function getVisibleCount() {
-    return Math.floor(track.parentElement.offsetWidth / getItemWidth());
+  /* ── Calcular offset para centralizar o card ativo ── */
+  function getOffset(idx) {
+    const stageW     = stage.offsetWidth;
+    /* Posição natural da esquerda do card ativo */
+    const cardLeft   = idx * STEP;
+    /* Queremos que o centro do card coincida com o centro do stage */
+    return cardLeft - (stageW / 2) + (CARD_W / 2);
   }
 
+  /* ── Ir para o índice ── */
   function goTo(idx) {
-    const max = total - getVisibleCount();
-    current = Math.max(0, Math.min(idx, max));
-    track.style.transform = `translateX(-${current * getItemWidth()}px)`;
+    current = Math.max(0, Math.min(idx, total - 1));
+    track.style.transform = `translateX(${-getOffset(current)}px)`;
+    updateCards(current);
+
+    /* Dots */
     dotsWrap.querySelectorAll('.srv-dot').forEach((d, i) => {
       d.classList.toggle('active', i === current);
     });
   }
 
+  /* Init */
+  goTo(0);
+
+  /* ── Botões ── */
   prevBtn.addEventListener('click', () => goTo(current - 1));
   nextBtn.addEventListener('click', () => goTo(current + 1));
 
-  /* Drag / swipe */
-  let startX = 0, isDragging = false, startCurrent = 0;
-  track.addEventListener('mousedown',  e => { isDragging = true; startX = e.clientX; startCurrent = current; track.style.transition = 'none'; });
+  /* ── Clique no card lateral → vai para ele ── */
+  cards.forEach((card, i) => {
+    card.addEventListener('click', () => {
+      if (i !== current) goTo(i);
+    });
+  });
+
+  /* ── Swipe / drag ── */
+  let startX = 0, dragDX = 0, dragging = false;
+
+  track.addEventListener('mousedown', e => {
+    dragging = true; startX = e.clientX; dragDX = 0;
+    track.style.transition = 'none';
+  });
   document.addEventListener('mousemove', e => {
-    if (!isDragging) return;
-    const dx = e.clientX - startX;
-    track.style.transform = `translateX(${-(startCurrent * getItemWidth()) + dx}px)`;
+    if (!dragging) return;
+    dragDX = e.clientX - startX;
+    track.style.transform = `translateX(${-getOffset(current) + dragDX}px)`;
   });
-  document.addEventListener('mouseup', e => {
-    if (!isDragging) return;
-    isDragging = false;
+  document.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
     track.style.transition = '';
-    const dx = e.clientX - startX;
-    if (Math.abs(dx) > 60) goTo(dx < 0 ? current + 1 : current - 1);
-    else goTo(startCurrent);
+    if (Math.abs(dragDX) > 60) goTo(dragDX < 0 ? current + 1 : current - 1);
+    else goTo(current);
   });
-  track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; startCurrent = current; }, { passive: true });
+
+  track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
   track.addEventListener('touchend',   e => {
     const dx = e.changedTouches[0].clientX - startX;
     if (Math.abs(dx) > 50) goTo(dx < 0 ? current + 1 : current - 1);
   });
+
+  /* Recalcular offset ao redimensionar */
+  window.addEventListener('resize', () => goTo(current));
 })();
 
 /* ══ EXPAND/COLLAPSE BIO ══ */
